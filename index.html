@@ -1,0 +1,2264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Vachi.ai - The AI-native platform automating workflows">
+    <title>Vachi.ai</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Navigation Styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background-color: white;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #46367E;
+        }
+
+        .nav-links {
+            display: none;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: #374151;
+            text-decoration: none;
+            transition: color 0.2s;
+            position: relative;
+            padding: 1.25rem 0;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            color: #7c3aed;
+        }
+
+        .chevron {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.2s;
+        }
+
+        .nav-link.active .chevron {
+            transform: rotate(180deg);
+        }
+
+        .nav-buttons {
+            display: none;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .mobile-menu-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #374151;
+            touch-action: manipulation;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            background: white;
+            max-height: calc(100vh - 64px);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .mobile-menu.active {
+            display: flex;
+        }
+
+        .mobile-menu-item {
+            border-bottom: 1px solid #e5e7eb;
+            flex-shrink: 0;
+        }
+
+        .mobile-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1rem;
+            color: #111827;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .mobile-link:active {
+            background-color: #f9fafb;
+        }
+
+        .mobile-chevron {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .mobile-link.active .mobile-chevron {
+            transform: rotate(180deg);
+        }
+
+        .mobile-submenu {
+            display: none;
+            flex-direction: column;
+            background-color: #f9fafb;
+            padding: 0.5rem 0;
+            max-height: 70vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .mobile-submenu.active {
+            display: flex;
+        }
+
+        .mobile-submenu-section {
+            padding: 1rem;
+        }
+
+        .mobile-submenu-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+            padding: 0 0.5rem;
+        }
+
+        .mobile-feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem 0.5rem;
+            text-decoration: none;
+            color: inherit;
+            touch-action: manipulation;
+        }
+
+        .mobile-feature-item:active {
+            background-color: #f3f4f6;
+        }
+
+        .mobile-feature-icon {
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            border-radius: 0.375rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .mobile-feature-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .mobile-feature-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .mobile-feature-name {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: #111827;
+            line-height: 1.3;
+        }
+
+        .mobile-feature-description {
+            font-size: 0.8125rem;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+
+        .mobile-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            padding: 1.5rem 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        /* Mega Menu Styles */
+        .mega-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-10px);
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease-out;
+            z-index: 40;
+            width: fit-content;
+        }
+
+        .mega-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .mega-menu-content {
+            padding: 1.5rem 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+        }
+
+        .mega-menu-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 280px;
+        }
+
+        .mega-menu-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.15s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .feature-item:hover {
+            background-color: #f9fafb;
+        }
+
+        .feature-icon {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            border-radius: 0.375rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .feature-icon svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .feature-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.125rem;
+        }
+
+        .feature-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #111827;
+            line-height: 1.2;
+        }
+
+        .feature-description {
+            font-size: 0.75rem;
+            color: #6b7280;
+            line-height: 1.3;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: #374151;
+        }
+
+        .btn-ghost:hover {
+            background-color: #f3f4f6;
+        }
+
+        .btn-primary {
+            background-color: #7c3aed;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #6d28d9;
+        }
+
+        .btn-hero {
+			background-color: rgba(255, 255, 255, 0.1);
+			backdrop-filter: blur(8px);
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			color: white;
+			padding: 0.75rem 1.5rem;
+		}
+		
+		/* Tablet and smaller (up to 1024px) */
+		@media (max-width: 1024px) {
+			.btn-hero {
+				width: 100%;
+				display: block;
+			}
+		}
+
+        .btn-hero:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-hero-outline {
+			background-color: transparent;
+			border: 1px solid rgba(255, 255, 255, 0.3);
+			color: white;
+			padding: 0.75rem 1.5rem;
+		}
+		
+		/* Make buttons full-width on tablet and smaller screens */
+		@media (max-width: 1024px) {
+			.btn-hero,
+			.btn-hero-outline {
+				width: 100%;
+				display: block;
+			}
+		}
+
+        .btn-hero-outline:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            min-height: 300vh;
+            display: flex;
+            align-items: flex-start;
+            overflow: hidden;
+            background: linear-gradient(135deg, #402F76 0%, #402F76 100%);
+            padding-top: 64px;
+        }
+
+        @media (max-width: 1023px) {
+            .hero {
+                min-height: 100vh;
+                padding-bottom: 2rem;
+            }
+
+            .hero-container {
+                position: relative;
+                height: auto;
+                min-height: calc(100vh - 64px);
+            }
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 120%, rgba(120, 119, 198, 0.3), rgba(255, 255, 255, 0));
+        }
+
+        .hero-container {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            align-items: center;
+            width: 100%;
+            position: relative;
+        }
+
+        .hero-content {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @media (max-width: 1023px) {
+            .hero-content {
+                gap: 1.5rem;
+            }
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: fit-content;
+        }
+
+        .hero-tag .icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        .hero-tag span {
+            font-size: 1.2rem;
+            font-weight: 500;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .hero-tag span.fade-out {
+            opacity: 0;
+        }
+
+        .hero-tag span.fade-in {
+            opacity: 1;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 620;
+            line-height: 1.1;
+        }
+
+        .hero-description {
+            font-size: 1.125rem;
+            line-height: 1.75;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            padding-top: 1rem;
+        }
+
+        .trust-badges {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding-top: 2rem;
+        }
+
+        .rating-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stars {
+            display: flex;
+            gap: 2px;
+        }
+
+        .star {
+            width: 16px;
+            height: 16px;
+        }
+
+        .rating-text {
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .trust-text {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Dashboard Container */
+        .dashboard-container {
+            display: none;
+            position: relative;
+            transition: all 0.3s ease-out;
+        }
+
+        .dashboard-wrapper {
+            position: relative;
+            animation: scaleIn 0.4s ease-out;
+        }
+
+        .dashboard-image {
+            position: relative;
+            border-radius: 0.32rem;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+
+        .dashboard-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .dashboard-image.dashboard-2 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        /* Revenue Section Styles */
+        .revenue-section {
+            padding: 6rem 0;
+            background-color: white;
+        }
+
+        @media (max-width: 1023px) {
+            .revenue-section {
+                padding: 3rem 0;
+            }
+        }
+
+        .revenue-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 5rem;
+            align-items: center;
+        }
+
+        .revenue-grid .revenue-content {
+            order: 1;
+        }
+
+        .revenue-grid .revenue-dashboard {
+            order: 2;
+        }
+
+        /* Reversed Grid Layout */
+        .revenue-grid-reverse {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 5rem;
+            align-items: center;
+        }
+
+        .revenue-grid-reverse .revenue-content {
+            order: 1;
+        }
+
+        .revenue-grid-reverse .revenue-dashboard {
+            order: 2;
+        }
+
+        @media (min-width: 1305px) {
+            .revenue-grid-reverse {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .revenue-grid-reverse .revenue-content {
+                order: 2;
+            }
+
+            .revenue-grid-reverse .revenue-dashboard {
+                order: 1;
+            }
+        }
+
+        .revenue-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            text-align: left;
+            align-items: flex-start;
+            padding: 1rem 0;
+        }
+
+        .platform-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: fit-content;
+            padding: 0.375rem 0.875rem;
+            background-color: #f3f4f6;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #7c3aed;
+        }
+
+        .platform-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background-color: #7c3aed;
+            border-radius: 50%;
+        }
+
+        .revenue-title {
+            font-size: 3rem;
+            font-weight: 600;
+            line-height: 1.2;
+            color: #111827;
+        }
+
+        .revenue-description {
+            font-size: 1.125rem;
+            line-height: 1.75;
+            color: #6b7280;
+            max-width: 540px;
+        }
+
+        .learn-more-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: fit-content;
+            padding: 0.625rem 1.25rem;
+            background-color: transparent;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .learn-more-btn:hover {
+            background-color: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        .learn-more-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .revenue-dashboard {
+            border-radius: 1.5rem;
+            padding: 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .revenue-gif {
+            width: 100%;
+            height: auto;
+            border-radius: 0.75rem;
+            display: block;
+        }
+
+        .ai-section {
+            padding: 6rem 0;
+            background-color: #ffffff;
+        }
+
+        @media (max-width: 1023px) {
+            .ai-section {
+                padding: 3rem 0;
+            }
+        }
+
+        .ai-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .ai-icon {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ai-icon svg {
+            width: 100%;
+            height: 100%;
+            stroke-width: 1.5;
+        }
+
+        .ai-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            line-height: 1.2;
+            color: #111827;
+            margin-bottom: 0;
+        }
+
+        .ai-subtitle {
+            font-size: 1.125rem;
+            line-height: 1.75;
+            color: #6b7280;
+            max-width: 700px;
+        }
+
+        .ai-cards-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .ai-card {
+            background: white;
+            border-radius: 0.3rem;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .ai-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .ai-card-img-top {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            background-color: #d1d5db;
+            overflow: hidden;
+        }
+
+        .ai-mockup-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .ai-card-body {
+            padding: 2rem 1.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.875rem;
+            background: white;
+        }
+
+        .ai-card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .ai-card-text {
+            font-size: 0.9375rem;
+            line-height: 1.6;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .ai-button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 3rem;
+            padding: 0 1rem;
+        }
+
+        .ai-cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+        }
+
+        .ai-cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        .ai-cta-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-arrow {
+            width: 1.25rem;
+            height: 1.25rem;
+            transition: transform 0.3s ease;
+        }
+
+        .ai-cta-button:hover .button-arrow {
+            transform: translateX(4px);
+        }
+
+        /* Integrations Section Styles */
+        .integrations-section {
+            padding: 6rem 0;
+            background-color: #ffffff;
+        }
+
+        @media (max-width: 1023px) {
+            .integrations-section {
+                padding: 3rem 0;
+            }
+        }
+
+        .integrations-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .integrations-badge {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            padding: 0.375rem 0.875rem;
+            background-color: #f3f4f6;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #7c3aed;
+        }
+
+        .integrations-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background-color: #7c3aed;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .integrations-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            line-height: 1.2;
+            color: #111827;
+            max-width: 900px;
+            margin: 0;
+        }
+
+        .integrations-image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .integrations-flowchart {
+            width: 100%;
+            max-width: 1200px;
+            height: auto;
+            display: block;
+            border-radius: 0.75rem;
+
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (min-width: 1305px) {
+            .mobile-menu-btn {
+                display: none;
+            }
+
+            .nav-links {
+                display: flex;
+            }
+
+            .nav-buttons {
+                display: flex;
+            }
+
+            .hero-title {
+                font-size: 4rem;
+            }
+
+            .hero-buttons {
+                flex-direction: row;
+            }
+
+            .revenue-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .ai-cards-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .ai-title {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 1304px) {
+            .nav-links {
+                display: none;
+            }
+
+            .nav-buttons {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: flex;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .hero-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .dashboard-container {
+                display: block;
+            }
+
+            .hero-title {
+                font-size: 3.9rem;
+            }
+
+            .mega-menu-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .mega-menu-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .revenue-title {
+                font-size: 2.25rem;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-description {
+                font-size: 1rem;
+            }
+
+            .hero-tag span {
+                font-size: 1rem;
+            }
+
+            .trust-badges {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                padding-top: 1rem;
+            }
+
+            .hero-content {
+                gap: 1.25rem;
+            }
+
+            .ai-title {
+                font-size: 1.875rem;
+            }
+
+            .ai-subtitle {
+                font-size: 1rem;
+            }
+
+            .ai-header {
+                margin-bottom: 3rem;
+            }
+
+            .ai-icon {
+                width: 48px;
+                height: 48px;
+            }
+
+            .ai-card-img-top {
+                height: 240px;
+            }
+
+            .ai-card-body {
+                padding: 1.5rem 1.25rem;
+            }
+
+            .ai-card-title {
+                font-size: 1.125rem;
+            }
+
+            .ai-card-text {
+                font-size: 0.875rem;
+            }
+
+            .integrations-title {
+                font-size: 1.875rem;
+            }
+
+            .integrations-header {
+                margin-bottom: 2.5rem;
+            }
+
+            .integrations-image-container {
+                padding: 1rem 0.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .ai-button-container {
+                margin-top: 2rem;
+            }
+
+            .ai-cta-button {
+                padding: 0.875rem 1.75rem;
+                font-size: 1rem;
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .ai-cta-button {
+                padding: 0.75rem 1.5rem;
+                font-size: 0.9375rem;
+                max-width: 100%;
+            }
+
+            .button-arrow {
+                width: 1rem;
+                height: 1rem;
+            }
+
+            .integrations-title {
+                font-size: 1.5rem;
+            }
+
+            .integrations-header {
+                margin-bottom: 2rem;
+                gap: 1rem;
+            }
+        }
+
+        .section-divider {
+            border: none;
+            border-top: 1px solid #f3f4f6;
+            margin: 0;
+            width: 100%;
+        }
+
+        footer a:hover {
+            color: #7c3aed !important;
+        }
+
+        footer button:hover {
+            background-color: #6d28d9 !important;
+        }
+
+        @media (max-width: 767px) {
+            footer>div>div:first-child {
+                grid-template-columns: 1fr !important;
+            }
+
+            footer>div>div:last-child {
+                flex-direction: column;
+                align-items: flex-start !important;
+            }
+
+            footer>div>div:last-child>div:last-child {
+                flex-direction: column;
+                align-items: flex-start !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <!-- Logo -->
+                <div class="logo">
+                    <a href="/" style="text-decoration: none; color: inherit;">
+                        <h1>Vachi.ai</h1>
+                    </a>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="nav-links">
+                    <a class="nav-link" id="productLink">
+                        Product
+                        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </a>
+                    <a href="security.html" class="nav-link">Security</a>
+                    <a href="#" class="nav-link">
+                        Learning center
+                        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </a>
+                    <a href="agents.html" class="nav-link">Agents</a>
+                </div>
+
+                <!-- CTA Buttons -->
+                <div class="nav-buttons">
+                    <!-- <button class="btn btn-ghost">Log in</button> -->
+                    <a href="aiagents.html" target="_blank" style="text-decoration:none;">
+                        <button class="btn btn-ghost">View all Agents</button>
+                    </a>
+                    <!-- <button class="btn btn-primary">Talk to sales</button> -->
+                    <a href="https://wkf.ms/4q5uwc7" target="_blank" style="text-decoration:none;">
+                        <button class="btn btn-primary">Talk to sales</button>
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="mobile-menu-btn" id="mobileMenuBtn" type="button">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div class="mobile-menu" id="mobileMenu">
+                <div class="mobile-menu-item">
+                    <div class="mobile-link" id="mobileProductLink">
+                        <span>Product</span>
+                        <svg class="mobile-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
+                    <div class="mobile-submenu" id="mobileProductSubmenu">
+                        <div class="mobile-submenu-section">
+                            <h3 class="mobile-submenu-title">Core Features</h3>
+                            <a href="https://arflow.vachi.ai/" class="mobile-feature-item" >
+                                <div class="mobile-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="3" width="7" height="7"></rect>
+                                        <rect x="14" y="3" width="7" height="7"></rect>
+                                        <rect x="14" y="14" width="7" height="7"></rect>
+                                        <rect x="3" y="14" width="7" height="7"></rect>
+                                    </svg>
+                                </div>
+                                <div class="mobile-feature-content">
+                                    <div class="mobile-feature-name">Accounts Receivable</div>
+                                    <!-- <div class="mobile-feature-description">Skip manual tasks</div> -->
+                                </div>
+                            </a>
+                            <a href="https://apflow.vachi.ai/" class="mobile-feature-item">
+                                <div class="mobile-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                                        <polyline points="10 9 9 9 8 9"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="mobile-feature-content">
+                                    <div class="mobile-feature-name">Accounts Payable</div>
+                                    <!-- <div class="mobile-feature-description">Get paid on time</div> -->
+                                </div>
+                            </a>
+                            <a href="https://usaspend.vachi.ai/" class="mobile-feature-item">
+                                <div class="mobile-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                                    </svg>
+                                </div>
+                                <div class="mobile-feature-content">
+                                    <div class="mobile-feature-name">USA Spending Data</div>
+                                    <!-- <div class="mobile-feature-description">Never miss a payment</div> -->
+                                </div>
+                            </a>
+                            <a href="https://invex.vachi.ai/" class="mobile-feature-item">
+                                <div class="mobile-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                                    </svg>
+                                </div>
+                                <div class="mobile-feature-content">
+                                    <div class="mobile-feature-name">Inventory Management</div>
+                                    <!-- <div class="mobile-feature-description">Match transactions in seconds</div> -->
+                                </div>
+                            </a>
+                            <a href="https://invoicex.vachi.ai/" class="mobile-feature-item">
+                                <div class="mobile-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="mobile-feature-content">
+                                    <div class="mobile-feature-name">Invoice Automation</div>
+                                    <!-- <div class="mobile-feature-description">Enjoy frictionless connections</div> -->
+                                </div>
+                            </a>
+                        </div>
+                        <div class="mobile-submenu-section">
+                            <!-- <h3 class="mobile-submenu-title">Advanced Features</h3> -->
+                            <a href="https://glaudex.vachi.ai/login?next=https://glaudex.vachi.ai/" class="mobile-feature-item">
+                                <div class="mobile-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path
+                                            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <div class="mobile-feature-content">
+                                    <div class="mobile-feature-name">GL Analyzer</div>
+                                    <!-- <div class="mobile-feature-description">Speed up your monthly close</div> -->
+                                </div>
+                            </a>
+                            <a href="https://soc1report.vachi.ai/" class="mobile-feature-item">
+                                <div class="mobile-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                    </svg>
+                                </div>
+                                <div class="mobile-feature-content">
+                                    <div class="mobile-feature-name">SOC-1 Audit Control</div>
+                                    <!-- <div class="mobile-feature-description">Customize your financial statements</div> -->
+                                </div>
+                            </a>
+                            <a href="https://taxbox.vachi.ai/" class="mobile-feature-item">
+                                <div class="mobile-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                    </svg>
+                                </div>
+                                <div class="mobile-feature-content">
+                                    <div class="mobile-feature-name">Tax Package Generator</div>
+                                    <!-- <div class="mobile-feature-description">Manage all entities in one place</div> -->
+                                </div>
+                            </a>
+                            <a href="https://taxelgen.vachi.ai/" class="mobile-feature-item">
+                                <div class="mobile-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                    </svg>
+                                </div>
+                                <div class="mobile-feature-content">
+                                    <div class="mobile-feature-name">Engagement Letter Generator</div>
+                                    <!-- <div class="mobile-feature-description">Automate complex revenue models</div> -->
+                                </div>
+                            </a>
+                            <a href="https://glcompare.vachi.ai/" class="mobile-feature-item">
+                                <div class="mobile-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                                    </svg>
+                                </div>
+                                <div class="mobile-feature-content">
+                                    <div class="mobile-feature-name">General Ledger Comparision</div>
+                                    <!-- <div class="mobile-feature-description">Get visibility on the performance instantly
+                                    </div> -->
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="mobile-menu-item">
+                    <a href="security.html" class="mobile-link">Security</a>
+                </div>
+                <div class="mobile-menu-item">
+                    <a href="#" class="mobile-link">Learning center</a>
+                </div>
+                <div class="mobile-menu-item">
+                    <a href="agents.html" class="mobile-link">Agents</a>
+                </div>
+                <div class="mobile-buttons">
+                    <!-- <button class="btn btn-ghost btn-full">Log in</button> -->
+                    <a href="aiagents.html" style="text-decoration: none;">
+                        <button class="btn btn-ghost btn-full">View all Agents</button>
+                    </a>
+                    <a href="https://wkf.ms/4q5uwc7" target="_blank" style="text-decoration:none;">
+                        <button class="btn btn-primary btn-full">Talk to sales</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mega Menu for Product -->
+        <div class="mega-menu" id="productMegaMenu">
+            <div class="mega-menu-content">
+                <!-- Core Features -->
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-title">Core Features</h3>
+                    <div class="feature-list">
+                        <a href="https://arflow.vachi.ai/" class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="14" width="7" height="7"></rect>
+                                    <rect x="3" y="14" width="7" height="7"></rect>
+                                </svg>
+                            </div>
+                            <div class="feature-content">
+                                <div class="feature-name">Account Receivable</div>
+                                <!-- <div class="feature-description">Skip manual tasks</div> -->
+                            </div>
+                        </a>
+
+                        <a href="https://apflow.vachi.ai/" class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="feature-content">
+                                <div class="feature-name">Accounts Payable</div>
+                                <!-- <div class="feature-description">Get paid on time</div> -->
+                            </div>
+                        </a>
+
+                        <a href="https://usaspend.vachi.ai/" class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                                </svg>
+                            </div>
+                            <div class="feature-content">
+                                <div class="feature-name">USA Spending Data</div>
+                                <!-- <div class="feature-description">Never miss a payment</div> -->
+                            </div>
+                        </a>
+
+                        <a href="https://invex.vachi.ai/" class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                                </svg>
+                            </div>
+                            <div class="feature-content">
+                                <div class="feature-name">Inventory Management</div>
+                                <!-- <div class="feature-description">Match transactions in seconds</div> -->
+                            </div>
+                        </a>
+
+                        <a href="https://invoicex.vachi.ai/" class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                </svg>
+                            </div>
+                            <div class="feature-content">
+                                <div class="feature-name">Invoice Automation</div>
+                                <!-- <div class="feature-description">Enjoy frictionless connections</div>p -->
+                            </div>
+                        </a>
+                    </div>
+                </div> 
+
+                <!-- Advanced Features -->
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-title">More Agents</h3>
+                    <div class="feature-list">
+                        <a href="https://glaudex.vachi.ai/login?next=https://glaudex.vachi.ai/" class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                            </div>
+                            <div class="feature-content">
+                                <div class="feature-name">General Ledger Analyzer</div>
+                                <!-- <div class="feature-description">Manage all entities in one place</div> -->
+                            </div>
+                        </a>
+
+                        <a href="https://soc1report.vachi.ai/" class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                            </div>
+                            <div class="feature-content">
+                                <div class="feature-name">SOC-1 Audit Control</div>
+                                <!-- <div class="feature-description">Automate complex revenue models</div> -->
+                            </div>
+                        </a>
+
+                        <a href="https://taxbox.vachi.ai/" class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                                </svg>
+                            </div>
+                            <div class="feature-content">
+                                <div class="feature-name">Tax Package Generator</div>
+                                <div class="feature-description"></div>
+                            </div>
+                        </a>
+
+                        <a href="https://taxelgen.vachi.ai/" class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path
+                                        d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <div class="feature-content">
+                                <div class="feature-name">Tax EL Generator</div>
+                                <!-- <div class="feature-description">Generate Engagement Letter</div> -->
+                            </div>
+                        </a>
+
+                        <a href="https://glcompare.vachi.ai/" class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path
+                                        d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <div class="feature-content">
+                                <div class="feature-name">General Ledger Comparision</div>
+                                <!-- <div class="feature-description">Compare GL with AP Aging</div> -->
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-container">
+            <div class="container">
+                <div class="hero-grid">
+                    <!-- Left Column - Text Content -->
+                    <div class="hero-content" id="heroContent">
+                        <!-- Tag -->
+                        <div class="hero-tag">
+                            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275z">
+                                </path>
+                            </svg>
+                            <span id="rotatingText">Automated invoicing</span>
+                        </div>
+
+                        <!-- Main Headline -->
+                        <h1 class="hero-title">Unleash the Power of AI Agents</h1>
+
+                        <!-- Description -->
+                        <p class="hero-description">
+                            Vachi.ai delivers cutting-edge artificial intelligence solutions that automate workflows,
+                            optimize operations, and accelerate growth. From intelligent analytics to automated
+                            processes, we empower businesses to operate smarter and achieve unprecedented efficiency.
+                        </p>
+
+                        <!-- CTA Buttons -->
+                        <div class="hero-buttons">
+                            <a href="https://wkf.ms/4q5uwc7" target="_blank" style="text-decoration:none;">
+                                <button class="btn btn-hero">Talk to sales</button>
+                            </a>
+                            <a href="aiagents.html" target="_parent" style="text-decoration:none;">
+                                <button class="btn btn-hero-outline">View all Agents</button>
+                            </a>
+                        </div>
+
+                        <!-- Trust Badges -->
+                        <div class="trust-badges">
+                            <div class="rating-badge">
+                                <div class="stars">
+                                    <svg class="star" width="16" height="16" viewBox="0 0 24 24" fill="#facc15"
+                                        stroke="#facc15" stroke-width="2">
+                                        <polygon
+                                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                                        </polygon>
+                                    </svg>
+                                    <svg class="star" width="16" height="16" viewBox="0 0 24 24" fill="#facc15"
+                                        stroke="#facc15" stroke-width="2">
+                                        <polygon
+                                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                                        </polygon>
+                                    </svg>
+                                    <svg class="star" width="16" height="16" viewBox="0 0 24 24" fill="#facc15"
+                                        stroke="#facc15" stroke-width="2">
+                                        <polygon
+                                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                                        </polygon>
+                                    </svg>
+                                    <svg class="star" width="16" height="16" viewBox="0 0 24 24" fill="#facc15"
+                                        stroke="#facc15" stroke-width="2">
+                                        <polygon
+                                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                                        </polygon>
+                                    </svg>
+                                    <svg class="star" width="16" height="16" viewBox="0 0 24 24" fill="#facc15"
+                                        stroke="#facc15" stroke-width="2">
+                                        <polygon
+                                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                                        </polygon>
+                                    </svg>
+                                </div>
+                                <span class="rating-text">5.0</span>
+                            </div>
+                            <div class="trust-text">Reliable, trusted, and redefining excellence.</div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column - Dashboard Mockup -->
+                    <div class="dashboard-container" id="dashboardContainer">
+                        <div class="dashboard-wrapper">
+                            <div class="dashboard-image" id="dashboard1">
+                                <img src="assets/dashboard.png" alt="AI-native dashboard showing metrics and analytics">
+                            </div>
+                            <div class="dashboard-image dashboard-2" id="dashboard2">
+                                <img src="assets/dashboard2.png" alt="Second AI-native dashboard">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Revenue & Invoicing Section -->
+    <section class="revenue-section">
+        <div class="container">
+            <div class="revenue-grid">
+                <!-- Left Column - Content -->
+                <div class="revenue-content">
+                    <!-- <div class="platform-badge">Platform</div> -->
+
+                    <h2 class="revenue-title">Revenue & invoicing</h2>
+
+                    <p class="revenue-description">
+                        Vachi.ai automates billing, collections, and payments with its Accounts Receivable Agent while
+                        the Invoice Automation Agent processes invoices and flags exceptions. The Bullmate Receipt
+                        Manager securely captures client receipts, speeding up revenue cycles and freeing teams for
+                        strategic decisions.
+                    </p>
+                    <a href="aiagents.html" style="text-decoration: none;">
+                        <button class="learn-more-btn">
+                            Learn more
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </button>
+                    </a>
+                </div>
+
+                <!-- Right Column - Dashboard -->
+                <div class="revenue-dashboard">
+                    <img src="assets/Revenue & invoicing.gif" alt="Revenue & invoicing dashboard animation"
+                        class="revenue-gif">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Horizontal Rule -->
+    <hr class="section-divider">
+
+    <!-- Close management Section -->
+    <section class="revenue-section">
+        <div class="container">
+            <div class="revenue-grid-reverse">
+                <!-- Left Column - Dashboard -->
+                <div class="revenue-dashboard">
+                    <img src="assets/Close management.gif" alt="Accounts payable dashboard animation"
+                        class="revenue-gif">
+                </div>
+
+                <!-- Right Column - Content -->
+                <div class="revenue-content">
+                    <!-- <div class="platform-badge">Platform</div> -->
+
+                    <h2 class="revenue-title">Close management</h2>
+
+                    <p class="revenue-description">
+                        Month-end and quarter-end closes are simplified with MIP Automation extracting GL data, GL
+                        Analysis providing insights, and Integrated Payroll handling payroll posting and ledger updates.
+                        Vachi.ai reduces errors and allows accountants to focus on high-value financial tasks. </p>
+                    <a href="aiagents.html" style="text-decoration: none;">
+                        <button class="learn-more-btn">
+                            Learn more
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Horizontal Rule -->
+    <hr class="section-divider">
+
+    <!-- Financial Reporting Section -->
+    <section class="revenue-section">
+        <div class="container">
+            <div class="revenue-grid">
+                <!-- Left Column - Content -->
+                <div class="revenue-content">
+                    <!-- <div class="platform-badge">Platform</div> -->
+
+                    <h2 class="revenue-title">Investor & GAAP reporting</h2>
+
+                    <p class="revenue-description">
+                        SOC-1 Audit Control Reports are generated automatically while GL vs TB Comparison identifies
+                        discrepancies. Tax Package Generator and related agents consolidate engagement letters, RRF
+                        forms, and tax deliverables, delivering accurate, compliant, and transparent reporting for
+                        investors and stakeholders.
+                    </p>
+                    <a href="aiagents.html" style="text-decoration: none;">
+                        <button class="learn-more-btn">
+                            Learn more
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </button>
+                    </a>
+                </div>
+
+                <!-- Right Column - Dashboard -->
+                <div class="revenue-dashboard">
+                    <img src="assets/Investor & GAAP reporting.gif" alt="Financial reporting dashboard animation"
+                        class="revenue-gif">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Horizontal Rule -->
+    <hr class="section-divider">
+
+
+    <section class="ai-section">
+        <div class="container">
+            <!-- Section Header -->
+            <div class="ai-header">
+                <div class="ai-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275z">
+                        </path>
+                    </svg>
+                </div>
+                <h2 class="ai-title">Run your finance on AI</h2>
+                <p class="ai-subtitle">
+                    Link your systems and let Vachi.ai remove manual steps and build packages for review.
+                </p>
+            </div>
+
+            <!-- Cards Grid -->
+            <div class="ai-cards-grid">
+                <!-- Card 1: Invoice Automation -->
+                
+                <div class="ai-card">
+                    <a href="https://invoicex.vachi.ai/auth/login" style="text-decoration: none;">
+                        <div class="ai-card-img-top">
+                            <img src="assets/Invoice Automation.gif" alt="Data visualization dashboard"
+                                class="ai-mockup-image">
+                        </div>
+                        <div class="ai-card-body">
+                            <h3 class="ai-card-title">Invoice Automation</h3>
+                            <p class="ai-card-text">
+                                AI-powered invoice processing with intelligent data capture, 3-way match, and exception
+                                routing.
+                            </p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Card 2: Integrated Payroll -->
+                <div class="ai-card">
+                    <a href="https://usaspend.vachi.ai/" style="text-decoration: none;">
+                        <div class="ai-card-img-top">
+                            <img src="assets/Expences.gif" alt="Business analytics" class="ai-mockup-image">
+                        </div>
+                        <div class="ai-card-body">
+                            <h3 class="ai-card-title">USA Spending Data Scraper</h3>
+                            <p class="ai-card-text">
+                                Prompt-driven USASpending scraping—natural-language queries, automated data extraction & cleaning, and report-ready exports.
+                            </p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Card 3: Inventory Management -->
+                <div class="ai-card">
+                    <a href="https://invex.vachi.ai/" style="text-decoration: none;">
+                        <div class="ai-card-img-top">
+                            <img src="assets/Finance Intelligence.gif" alt="Financial charts" class="ai-mockup-image">
+                        </div>
+                        <div class="ai-card-body">
+                            <h3 class="ai-card-title">Inventory Management</h3>
+                            <p class="ai-card-text">
+                                Real-time, multi-location inventory with automated procurement and forecasting.
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Centered Button -->
+            <div class="ai-button-container">
+                <a href="aiagents.html" class="learn-more-btn" style="text-decoration: none;">
+                    View all Agents
+                    <svg class="button-arrow" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- Integrations Section -->
+    <section class="integrations-section">
+        <div class="container">
+            <!-- Section Header -->
+            <div class="integrations-header">
+                <!-- <div class="integrations-badge">Tools</div> -->
+                <h2 class="integrations-title">Simplify, optimize, and elevate your entire business ecosystem with
+                    Vachi.ai</h2>
+            </div>
+
+            <!-- Flowchart Image -->
+            <div class="integrations-image-container">
+                <img src="assets/flowchart.gif"
+                    alt="vachi.ai integrations flowchart showing connections with various platforms"
+                    class="integrations-flowchart">
+            </div>
+        </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- Footer Section -->
+    <footer style="background-color: white; padding: 4rem 0 2rem 0; margin-top: 4rem;">
+        <div class="container">
+            <!-- Main Footer Content -->
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 3rem; margin-bottom: 3rem;">
+                <!-- Product Column -->
+                <div>
+                    <h3
+                        style="font-size: 0.875rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                        PRODUCT</h3>
+                    <ul
+                        style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <!-- <li><a href="#"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Automated
+                                general ledger</a></li> -->
+                        <li><a href="https://arflow.vachi.ai/"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Accounts
+                                receivable</a></li>
+                        <li><a href="https://apflow.vachi.ai/"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Accounts
+                                payable</a></li>
+                        <li><a href="https://usaspend.vachi.ai/"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">USA Spending Data</a></li>
+                        <li><a href="https://invex.vachi.ai/"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Inventory Management</a></li>
+                        <li><a href="https://invoicex.vachi.ai/"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Invoice Automation</a></li>
+                    </ul>
+                </div>
+
+                <!-- Solutions Column -->
+                <div>
+                    <h3
+                        style="font-size: 0.875rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Our Agents</h3>
+                    <h4
+                        style="font-size: 0.8125rem; font-weight: 600; color: #111827; margin-bottom: 0.75rem; margin-top: 1.5rem;"></h4>
+                    <ul
+                        style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <li><a href="https://glaudex.vachi.ai/login?next=https://glaudex.vachi.ai/"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">General Analyzer</a>
+                        </li>
+                        <li><a href="https://soc1report.vachi.ai/"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">SOC-1 Audit Control</a>
+                        </li>
+                        <li><a href="https://taxbox.vachi.ai/"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Tax Package Generator</a>
+                        </li>
+                        <li><a href="https://taxelgen.vachi.ai/"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Engagement Letter Generator</a></li>
+                        <li><a href="https://glcompare.vachi.ai/"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">General Ledger Comparision</a></li>
+                        </ul>
+                </div>
+
+                <!-- Resources Column -->
+                <div>
+                    <h3
+                        style="font-size: 0.875rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                        RESOURCES</h3>
+
+                    <h4 style="font-size: 0.8125rem; font-weight: 600; color: #111827; margin-bottom: 0.75rem;">Learn
+                    </h4>
+                    <ul
+                        style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <li><a href="#"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Blog</a>
+                        </li>
+                        <li><a href="#"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Resource
+                                center</a></li>
+                        <li><a href="#"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Help
+                                center</a></li>
+                        <!-- <li><a href="#"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">xStripe</a>
+                        </li> -->
+                    </ul>
+
+                    <!-- <h4
+                        style="font-size: 0.8125rem; font-weight: 600; color: #111827; margin-bottom: 0.75rem; margin-top: 1.5rem;">
+                        Connect</h4>
+                    <ul
+                        style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <li><a href="#"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Public
+                                demo</a></li>
+                        <li><a href="#"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Webinars</a>
+                        </li>
+                        <li><a href="#"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Partners</a>
+                        </li>
+                    </ul> -->
+                </div>
+
+                <!-- Company Column -->
+                <div>
+                    <h3
+                        style="font-size: 0.875rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                        COMPANY</h3>
+                    <ul
+                        style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <li><a href="#"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">About</a>
+                        </li>
+                        <li><a href="#"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Careers</a>
+                        </li>
+                        <li><a href="#"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Contact
+                                us</a></li>
+                        <li><a href="termsofuse.html"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Terms
+                                of use</a></li>
+                        <li><a href="privacypolicy.html"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Privacy
+                                policy</a></li>
+                        <!-- <li><a href="#"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Cookie
+                                Policy</a></li> -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Footer -->
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem; padding-top: 2rem; border-top: 1px solid #e5e7eb;">
+                <!-- Logo and Social Links -->
+                <div style="display: flex; align-items: center; gap: 1.5rem;">
+                    <div style="font-family: monospace; font-size: 1.5rem; font-weight: 700; color: #111827;">Vachi.ai
+                    </div>
+                </div>
+
+                <!-- Copyright and Badges -->
+                <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
+                    <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">Vachi.ai Powered by Harshwal & Company LLP. © 2025 Harshwal & Company LLP. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get all elements
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const productLink = document.getElementById('productLink');
+            const productMegaMenu = document.getElementById('productMegaMenu');
+            const mobileProductLink = document.getElementById('mobileProductLink');
+            const mobileProductSubmenu = document.getElementById('mobileProductSubmenu');
+            let megaMenuTimeout;
+
+            // Mobile menu toggle
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.onclick = function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (mobileMenu.classList.contains('active')) {
+                        mobileMenu.classList.remove('active');
+                        if (mobileProductSubmenu) mobileProductSubmenu.classList.remove('active');
+                        if (mobileProductLink) mobileProductLink.classList.remove('active');
+                    } else {
+                        mobileMenu.classList.add('active');
+                    }
+                };
+            }
+
+            // Mobile product submenu toggle
+            if (mobileProductLink && mobileProductSubmenu) {
+                mobileProductLink.onclick = function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (mobileProductSubmenu.classList.contains('active')) {
+                        mobileProductSubmenu.classList.remove('active');
+                        mobileProductLink.classList.remove('active');
+                    } else {
+                        mobileProductSubmenu.classList.add('active');
+                        mobileProductLink.classList.add('active');
+                    }
+                };
+            }
+
+            // Desktop product mega menu
+            if (productLink && productMegaMenu) {
+                productLink.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    if (window.innerWidth >= 1305) {
+                        if (productMegaMenu.classList.contains('active')) {
+                            closeMegaMenu();
+                        } else {
+                            openMegaMenu();
+                        }
+                    }
+                });
+
+                productLink.addEventListener('mouseenter', function () {
+                    if (window.innerWidth >= 1305) {
+                        clearTimeout(megaMenuTimeout);
+                        openMegaMenu();
+                    }
+                });
+
+                productLink.addEventListener('mouseleave', function () {
+                    if (window.innerWidth >= 1305) {
+                        megaMenuTimeout = setTimeout(closeMegaMenu, 200);
+                    }
+                });
+
+                productMegaMenu.addEventListener('mouseenter', function () {
+                    if (window.innerWidth >= 1305) {
+                        clearTimeout(megaMenuTimeout);
+                    }
+                });
+
+                productMegaMenu.addEventListener('mouseleave', function () {
+                    if (window.innerWidth >= 1305) {
+                        megaMenuTimeout = setTimeout(closeMegaMenu, 200);
+                    }
+                });
+            }
+
+            function openMegaMenu() {
+                productMegaMenu.classList.add('active');
+                productLink.classList.add('active');
+            }
+
+            function closeMegaMenu() {
+                productMegaMenu.classList.remove('active');
+                productLink.classList.remove('active');
+            }
+
+            // Close menus when clicking outside
+            document.addEventListener('click', function (event) {
+                if (productMegaMenu && !productMegaMenu.contains(event.target) &&
+                    productLink && !productLink.contains(event.target) &&
+                    productMegaMenu.classList.contains('active')) {
+                    closeMegaMenu();
+                }
+
+                if (mobileMenu && !mobileMenu.contains(event.target) &&
+                    mobileMenuBtn && !mobileMenuBtn.contains(event.target) &&
+                    mobileMenu.classList.contains('active')) {
+                    mobileMenu.classList.remove('active');
+                    if (mobileProductSubmenu) mobileProductSubmenu.classList.remove('active');
+                    if (mobileProductLink) mobileProductLink.classList.remove('active');
+                }
+            });
+
+            // Close menus on window resize
+            window.addEventListener('resize', function () {
+                if (window.innerWidth >= 1305) {
+                    if (mobileMenu) {
+                        mobileMenu.classList.remove('active');
+                        if (mobileProductSubmenu) mobileProductSubmenu.classList.remove('active');
+                        if (mobileProductLink) mobileProductLink.classList.remove('active');
+                    }
+                } else {
+                    if (productMegaMenu) closeMegaMenu();
+                }
+            });
+
+            // Rotating text animation
+            const rotatingTextElement = document.getElementById('rotatingText');
+            const texts = [
+                'Automated invoicing',
+                'Built for scale',
+                'AI assisted reconciliations',
+                'GAAP and investor reporting'
+            ];
+            let currentIndex = 0;
+
+            function rotateText() {
+                rotatingTextElement.classList.add('fade-out');
+
+                setTimeout(function () {
+                    currentIndex = (currentIndex + 1) % texts.length;
+                    rotatingTextElement.textContent = texts[currentIndex];
+                    rotatingTextElement.classList.remove('fade-out');
+                    rotatingTextElement.classList.add('fade-in');
+
+                    setTimeout(function () {
+                        rotatingTextElement.classList.remove('fade-in');
+                    }, 500);
+                }, 500);
+            }
+
+            setInterval(rotateText, 1800);
+
+            // Scroll animation
+            const heroContent = document.getElementById('heroContent');
+            const dashboardContainer = document.getElementById('dashboardContainer');
+            const dashboard1 = document.getElementById('dashboard1');
+            const dashboard2 = document.getElementById('dashboard2');
+            const heroSection = document.querySelector('.hero');
+
+            function handleScrollAnimation() {
+                // Only run scroll animations on desktop (1024px and above)
+                if (window.innerWidth < 1024) {
+                    return;
+                }
+
+                const scrollPosition = window.scrollY;
+                const heroTop = heroSection.offsetTop;
+                const heroHeight = heroSection.offsetHeight;
+                const windowHeight = window.innerHeight;
+                const scrollProgress = Math.min(Math.max((scrollPosition - heroTop) / (heroHeight - windowHeight), 0), 1);
+                const pastHero = scrollPosition > (heroTop + heroHeight - windowHeight);
+
+                const translateY = -(scrollProgress * 150);
+                const contentOpacity = Math.max(1 - (scrollProgress * 2), 0);
+
+                heroContent.style.transform = `translateY(${translateY}%)`;
+                heroContent.style.opacity = contentOpacity;
+
+                if (pastHero) {
+                    dashboardContainer.style.display = 'none';
+                } else {
+                    dashboardContainer.style.display = 'block';
+                }
+
+                if (scrollProgress > 0 && window.innerWidth >= 1024 && !pastHero) {
+                    const dashboard1Scale = 1 + (scrollProgress * 0.3);
+
+                    dashboardContainer.style.position = 'fixed';
+                    dashboardContainer.style.top = '50%';
+                    dashboardContainer.style.left = '50%';
+                    dashboardContainer.style.transform = 'translate(-50%, -50%)';
+                    dashboardContainer.style.width = '60%';
+                    dashboardContainer.style.maxWidth = '900px';
+                    dashboardContainer.style.zIndex = '20';
+
+                    dashboard1.style.transform = `scale(${dashboard1Scale})`;
+                    dashboard2.style.transform = `scale(${dashboard1Scale})`;
+
+                    if (scrollProgress > 0.5) {
+                        dashboard1.style.opacity = '0';
+                        dashboard2.style.opacity = '1';
+                    } else {
+                        dashboard1.style.opacity = '1';
+                        dashboard2.style.opacity = '0';
+                    }
+                } else if (!pastHero) {
+                    dashboardContainer.style.position = 'relative';
+                    dashboardContainer.style.top = 'auto';
+                    dashboardContainer.style.left = 'auto';
+                    dashboardContainer.style.transform = 'none';
+                    dashboardContainer.style.width = 'auto';
+                    dashboardContainer.style.zIndex = 'auto';
+
+                    dashboard1.style.transform = 'none';
+                    dashboard1.style.opacity = '1';
+                    dashboard2.style.transform = 'scale(0.8)';
+                    dashboard2.style.opacity = '0';
+                }
+            }
+
+            window.addEventListener('scroll', handleScrollAnimation);
+            handleScrollAnimation();
+        });
+    </script>
+</body>
+
+</html>

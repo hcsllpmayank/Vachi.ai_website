@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Vachi.ai - The AI-native platform automating workflows">
+    <title>Vachi.ai</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-color: #fafafa;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Navigation Styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background-color: white;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #46367E;
+        }
+
+        .nav-links {
+            display: none;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: #374151;
+            text-decoration: none;
+            transition: color 0.2s;
+            position: relative;
+            padding: 1.25rem 0;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            color: #7c3aed;
+        }
+
+        .chevron {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.2s;
+        }
+
+        .nav-link.active .chevron {
+            transform: rotate(180deg);
+        }
+
+        .nav-buttons {
+            display: none;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .mobile-menu-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #374151;
+            touch-action: manipulation;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            background: white;
+            max-height: calc(100vh - 64px);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .mobile-menu.active {
+            display: flex;
+        }
+
+        .mobile-menu-item {
+            border-bottom: 1px solid #e5e7eb;
+            flex-shrink: 0;
+        }
+
+        .mobile-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1rem;
+            color: #111827;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .mobile-link:active {
+            background-color: #f9fafb;
+        }
+
+        .mobile-chevron {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .mobile-link.active .mobile-chevron {
+            transform: rotate(180deg);
+        }
+
+        .mobile-submenu {
+            display: none;
+            flex-direction: column;
+            background-color: #f9fafb;
+            padding: 0.5rem 0;
+            max-height: 70vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .mobile-submenu.active {
+            display: flex;
+        }
+
+        .mobile-submenu-section {
+            padding: 1rem;
+        }
+
+        .mobile-submenu-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+            padding: 0 0.5rem;
+        }
+
+        .mobile-feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem 0.5rem;
+            text-decoration: none;
+            color: inherit;
+            touch-action: manipulation;
+        }
+
+        .mobile-feature-item:active {
+            background-color: #f3f4f6;
+        }
+
+        .mobile-feature-icon {
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            border-radius: 0.375rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .mobile-feature-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .mobile-feature-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .mobile-feature-name {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: #111827;
+            line-height: 1.3;
+        }
+
+        .mobile-feature-description {
+            font-size: 0.8125rem;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+
+        .mobile-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            padding: 1.5rem 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        /* Mega Menu Styles */
+        .mega-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-10px);
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease-out;
+            z-index: 40;
+            width: fit-content;
+        }
+
+        .mega-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .mega-menu-content {
+            padding: 1.5rem 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+        }
+
+        .mega-menu-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 280px;
+        }
+
+        .mega-menu-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.15s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .feature-item:hover {
+            background-color: #f9fafb;
+        }
+
+        .feature-icon {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            border-radius: 0.375rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .feature-icon svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .feature-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.125rem;
+        }
+
+        .feature-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #111827;
+            line-height: 1.2;
+        }
+
+        .feature-description {
+            font-size: 0.75rem;
+            color: #6b7280;
+            line-height: 1.3;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: #374151;
+        }
+
+        .btn-ghost:hover {
+            background-color: #f3f4f6;
+        }
+
+        .btn-primary {
+            background-color: #7c3aed;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #6d28d9;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        /* AI Agents Section */
+        .agents-section {
+            padding: 5rem 0;
+            background-color: #fafafa;
+            margin-top: 64px;
+        }
+
+        .agents-header {
+            margin-bottom: 3rem;
+        }
+
+        .agents-header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .agents-header-left {
+            flex: 1;
+            text-align: center;
+        }
+
+        .agents-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+
+        .agents-subtitle {
+            font-size: 1.125rem;
+            color: #6b7280;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .agents-header-right {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            align-items: flex-end;
+            min-width: 320px;
+        }
+
+        .search-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.625rem 1rem 0.625rem 2.5rem;
+            font-size: 0.9375rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            outline: none;
+            transition: all 0.2s;
+            background-color: white;
+        }
+
+        .search-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .search-input:focus {
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.875rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            color: #9ca3af;
+        }
+
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem;
+            background: white;
+            color: #4b5563;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: #7c3aed;
+            color: #7c3aed;
+        }
+
+        .filter-btn.active {
+            background: #7c3aed;
+            color: white;
+            border-color: #7c3aed;
+        }
+
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .agent-card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            border: 1px solid #e5e7eb;
+        }
+
+        .agent-card:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .agent-card.hidden {
+            display: none;
+        }
+
+        .agent-card-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .agent-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.875rem;
+            line-height: 1.4;
+        }
+
+        .agent-description {
+            font-size: 0.9375rem;
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            flex: 1;
+        }
+
+        .agent-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .agent-badge {
+            font-size: 0.8125rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+        }
+
+        .badge-department {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .agent-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #7c3aed;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9375rem;
+            transition: all 0.2s;
+            align-self: flex-start;
+        }
+
+        .agent-link:hover {
+            gap: 0.75rem;
+            color: #6d28d9;
+        }
+
+        .agent-link svg {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.2s;
+        }
+
+        .agent-link:hover svg {
+            transform: translateX(4px);
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+            font-size: 1.125rem;
+        }
+
+        /* Responsive Design */
+        @media (min-width: 1305px) {
+            .mobile-menu-btn {
+                display: none;
+            }
+
+            .nav-links {
+                display: flex;
+            }
+
+            .nav-buttons {
+                display: flex;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .agents-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .agents-header-content {
+                align-items: flex-start;
+            }
+
+            .agents-header-left {
+                text-align: left;
+            }
+
+            .agents-subtitle {
+                margin: 0;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .mega-menu-content {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .agents-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .mega-menu-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .agents-title {
+                font-size: 2rem;
+            }
+
+            .agents-subtitle {
+                font-size: 1rem;
+            }
+
+            .agents-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .agents-header-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .agents-header-left {
+                text-align: center;
+            }
+
+            .agents-subtitle {
+                margin: 0 auto;
+            }
+
+            .agents-header-right {
+                width: 100%;
+                align-items: stretch;
+            }
+
+            footer a:hover {
+                color: #7c3aed !important;
+            }
+
+            footer button:hover {
+                background-color: #6d28d9 !important;
+            }
+
+            footer>div>div:first-child {
+                grid-template-columns: 1fr !important;
+            }
+
+            footer>div>div:last-child {
+                flex-direction: column;
+                align-items: flex-start !important;
+            }
+
+            footer>div>div:last-child>div:last-child {
+                flex-direction: column;
+                align-items: flex-start !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <div class="logo">
+                    <a href="/" style="text-decoration: none; color: inherit;">
+                        <h1>Vachi.ai</h1>
+                    </a>
+                </div>
+
+                <div class="nav-links">
+                    <a class="nav-link" id="productLink">
+                        Product
+                        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </a>
+                    <a href="#" class="nav-link">Security</a>
+                    <a href="#" class="nav-link">Learning center</a>
+                    <a href="agents.html" class="nav-link">Agents</a>
+                </div>
+
+                <div class="nav-buttons">
+                    <a href="aiagents.html" target="_blank">
+                        <button class="btn btn-ghost">View all Agents</button>
+                    </a>
+                    <a href="https://wkf.ms/4q5uwc7" target="_blank">
+                        <button class="btn btn-primary">Talk to sales</button>
+                    </a>
+                </div>
+
+                <button class="mobile-menu-btn" id="mobileMenuBtn" type="button">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="mobile-menu" id="mobileMenu">
+                <div class="mobile-menu-item">
+                    <div class="mobile-link" id="mobileProductLink">
+                        <span>Product</span>
+                        <svg class="mobile-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
+                    <div class="mobile-submenu" id="mobileProductSubmenu">
+                        <div class="mobile-submenu-section">
+                            <h3 class="mobile-submenu-title">Core Features</h3>
+                            <a href="https://arflow.vachi.ai/" class="mobile-feature-item">
+                                <div class="mobile-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="3" width="7" height="7"></rect>
+                                        <rect x="14" y="3" width="7" height="7"></rect>
+                                        <rect x="14" y="14" width="7" height="7"></rect>
+                                        <rect x="3" y="14" width="7" height="7"></rect>
+                                    </svg>
+                                </div>
+                                <div class="mobile-feature-content">
+                                    <div class="mobile-feature-name">Accounts Receivable</div>
+                                </div>
+                            </a>
+                            <a href="https://apflow.vachi.ai/" class="mobile-feature-item">
+                                <div class="mobile-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                                        <polyline points="10 9 9 9 8 9"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="mobile-feature-content">
+                                    <div class="mobile-feature-name">Accounts Payable</div>
+                                </div>
+                            </a>
+                            <a href="https://usaspend.vachi.ai/" class="mobile-feature-item">
+                                <div class="mobile-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                                    </svg>
+                                </div>
+                                <div class="mobile-feature-content">
+                                    <div class="mobile-feature-name">USA Spending Data</div>
+                                </div>
+                            </a>
+                            <a href="https://invex.vachi.ai/" class="mobile-feature-item">
+                                <div class="mobile-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                                    </svg>
+                                </div>
+                                <div class="mobile-feature-content">
+                                    <div class="mobile-feature-name">Inventory Management</div>
+                                </div>
+                            </a>
+                            <a href="https://invoicex.vachi.ai/" class="mobile-feature-item">
+                                <div class="mobile-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="mobile-feature-content">
+                                    <div class="mobile-feature-name">Invoice Automation</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="mobile-submenu-section">
+                            <a href="https://glaudex.vachi.ai/login?next=https://glaudex.vachi.ai/" class="mobile-feature-item">
+                                <div class="mobile-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path
+                                            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <div class="mobile-feature-content">
+                                    <div class="mobile-feature-name">GL Analyzer</div>
+                                </div>
+                            </a>
+                            <a href="https://soc1report.vachi.ai/" class="mobile-feature-item">
+                                <div class="mobile-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                    </svg>
+                                </div>
+                                <div class="mobile-feature-content">
+                                    <div class="mobile-feature-name">SOC-1 Audit Control</div>
+                                </div>
+                            </a>
+                            <a href="https://taxbox.vachi.ai/" class="mobile-feature-item">
+                                <div class="mobile-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                    </svg>
+                                </div>
+                                <div class="mobile-feature-content">
+                                    <div class="mobile-feature-name">Tax Package Generator</div>
+                                </div>
+                            </a>
+                            <a href="https://taxelgen.vachi.ai/" class="mobile-feature-item">
+                                <div class="mobile-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                    </svg>
+                                </div>
+                                <div class="mobile-feature-content">
+                                    <div class="mobile-feature-name">Engagement Letter Generator</div>
+                                </div>
+                            </a>
+                            <a href="https://glcompare.vachi.ai/" class="mobile-feature-item">
+                                <div class="mobile-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                                    </svg>
+                                </div>
+                                <div class="mobile-feature-content">
+                                    <div class="mobile-feature-name">General Ledger Comparision</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="mobile-menu-item">
+                    <a href="#" class="mobile-link">Security</a>
+                </div>
+                <div class="mobile-menu-item">
+                    <a href="#" class="mobile-link">Learning center</a>
+                </div>
+                <div class="mobile-menu-item">
+                    <a href="agents.html" class="mobile-link">Agents</a>
+                </div>
+                <div class="mobile-buttons">
+                    <a href="aiagents.html" target="_blank">
+                        <button class="btn btn-ghost btn-full">View all Agents</button>
+                    </a>
+                    <a href="https://wkf.ms/4q5uwc7" target="_blank">
+                        <button class="btn btn-primary btn-full">Talk to sales</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="mega-menu" id="productMegaMenu">
+            <div class="mega-menu-content">
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-title">Core Features</h3>
+                    <div class="feature-list">
+                        <a href="https://arflow.vachi.ai/" class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="14" width="7" height="7"></rect>
+                                    <rect x="3" y="14" width="7" height="7"></rect>
+                                </svg>
+                            </div>
+                            <div class="feature-content">
+                                <div class="feature-name">Account Receivable</div>
+                            </div>
+                        </a>
+                        <a href="https://apflow.vachi.ai/" class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="feature-content">
+                                <div class="feature-name">Accounts Payable</div>
+                            </div>
+                        </a>
+                        <a href="https://usaspend.vachi.ai/" class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                                </svg>
+                            </div>
+                            <div class="feature-content">
+                                <div class="feature-name">USA Spending Data</div>
+                            </div>
+                        </a>
+                        <a href="https://invex.vachi.ai/" class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                                </svg>
+                            </div>
+                            <div class="feature-content">
+                                <div class="feature-name">Inventory Management</div>
+                            </div>
+                        </a>
+                        <a href="https://invoicex.vachi.ai/" class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                </svg>
+                            </div>
+                            <div class="feature-content">
+                                <div class="feature-name">Invoice Automation</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-title">More Agents</h3>
+                    <div class="feature-list">
+                        <a href="https://glaudex.vachi.ai/login?next=https://glaudex.vachi.ai/" class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                            </div>
+                            <div class="feature-content">
+                                <div class="feature-name">General Ledger Analyzer</div>
+                            </div>
+                        </a>
+                        <a href="https://soc1report.vachi.ai/" class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                            </div>
+                            <div class="feature-content">
+                                <div class="feature-name">SOC-1 Audit Control</div>
+                            </div>
+                        </a>
+                        <a href="https://taxbox.vachi.ai/" class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                                </svg>
+                            </div>
+                            <div class="feature-content">
+                                <div class="feature-name">Tax Package Generator</div>
+                            </div>
+                        </a>
+                        <a href="https://taxelgen.vachi.ai/" class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path
+                                        d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <div class="feature-content">
+                                <div class="feature-name">Tax EL Generator</div>
+                            </div>
+                        </a>
+                        <a href="https://glcompare.vachi.ai/" class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path
+                                        d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <div class="feature-content">
+                                <div class="feature-name">General Ledger Comparision</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- AI Agents Section -->
+    <section class="agents-section">
+        <div class="container">
+            <div class="agents-header">
+                <div class="agents-header-content">
+                    <div class="agents-header-left">
+                        <h2 class="agents-title">Our AI Agents</h2>
+                        <p class="agents-subtitle">Explore our comprehensive suite of AI-powered automation agents
+                            designed to streamline your workflows</p>
+                    </div>
+                    <div class="agents-header-right">
+                        <div class="search-container">
+                            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                            <input type="text" class="search-input" id="searchInput" placeholder="Search agents...">
+                        </div>
+                        <div class="filter-container">
+                            <button class="filter-btn active" data-filter="all">All</button>
+                            <button class="filter-btn" data-filter="Tax">Tax</button>
+                            <button class="filter-btn" data-filter="Audit">Audit</button>
+                            <button class="filter-btn" data-filter="Accounting">Accounting</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="agents-grid" id="agentsGrid">
+                <!-- Agent cards will be dynamically inserted here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer style="background-color: white; padding: 4rem 0 2rem 0; margin-top: 4rem;">
+        <div class="container">
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 3rem; margin-bottom: 3rem;">
+                <div>
+                    <h3
+                        style="font-size: 0.875rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                        PRODUCT</h3>
+                    <ul
+                        style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <li><a href="https://arflow.vachi.ai/"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Accounts
+                                receivable</a></li>
+                        <li><a href="https://apflow.vachi.ai/"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Accounts
+                                payable</a></li>
+                        <li><a href="https://usaspend.vachi.ai/"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">USA
+                                Spending Data</a></li>
+                        <li><a href="https://invex.vachi.ai/"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Inventory
+                                Management</a></li>
+                        <li><a href="https://invoicex.vachi.ai/"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Invoice
+                                Automation</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3
+                        style="font-size: 0.875rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                        Our Agents</h3>
+                    <ul
+                        style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <li><a href="https://glaudex.vachi.ai/login?next=https://glaudex.vachi.ai/"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">General
+                                Analyzer</a></li>
+                        <li><a href="https://soc1report.vachi.ai/"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">SOC-1
+                                Audit Control</a></li>
+                        <li><a href="https://taxbox.vachi.ai/"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Tax
+                                Package Generator</a></li>
+                        <li><a href="https://taxelgen.vachi.ai/"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Engagement
+                                Letter Generator</a></li>
+                        <li><a href="https://glcompare.vachi.ai/"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">General
+                                Ledger Comparision</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3
+                        style="font-size: 0.875rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                        RESOURCES</h3>
+                    <ul
+                        style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <li><a href="#"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Blog</a>
+                        </li>
+                        <li><a href="#"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Resource
+                                center</a></li>
+                        <li><a href="#"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Help
+                                center</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3
+                        style="font-size: 0.875rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                        COMPANY</h3>
+                    <ul
+                        style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <li><a href="#"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">About</a>
+                        </li>
+                        <li><a href="#"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Careers</a>
+                        </li>
+                        <li><a href="#"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Contact
+                                us</a></li>
+                        <li><a href="termsofuse.html"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Terms
+                                of use</a></li>
+                        <li><a href="privacypolicy.html"
+                                style="color: #6b7280; text-decoration: none; font-size: 0.875rem; transition: color 0.2s;">Privacy
+                                policy</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem; padding-top: 2rem; border-top: 1px solid #e5e7eb;">
+                <div style="display: flex; align-items: center; gap: 1.5rem;">
+                    <div style="font-family: monospace; font-size: 1.5rem; font-weight: 700; color: #111827;">Vachi.ai
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
+                    <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">Vachi.ai Powered by Harshwal & Company LLP. © 2025 Harshwal & Company LLP. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Configuration for URL generation
+        const URL_CONFIG = {
+            mode: 'production', // Change to 'development' for IP-based URLs
+            development: {
+                baseUrl: 'https://14.97.128.186',
+                usePort: true
+            },
+            production: {
+                baseUrl: 'vachi.ai',
+                protocol: 'https://',
+                usePort: false
+            }
+        };
+
+        // Agent data
+        const agents = [
+            { "slNo": 1, "name": "USA Spending Data", "description": "Prompt based scraping of USASpending data (Only Frontend)", "portNumber": 8509, "subdomain": "usaspend", "techUsed": "Flask", "department": "Accounting" },
+            { "slNo": 2, "name": "General Ledger Analyzer", "description": "This tool - GL Analysis is an audit-focused AI tool we developed to save audit time. It quickly analyzes general ledger data, detects anomalies, and summarizes key points—helping auditors work faster and deliver better results.GL Analysis is an AI tool we made for audits to save time. It automatically checks general ledger data, finds issues, and summarizes important points for faster, error-free audit work.", "portNumber": 8575, "subdomain": "glaudex", "techUsed": "Flask", "department": "Accounting" },
+            { "slNo": 3, "name": "GL Comparison with AP Aging", "description": "", "portNumber": 8585, "subdomain": "glcompare", "techUsed": "Flask", "department": "Accounting" },
+            { "slNo": 4, "name": "RRF Generator", "description": "This AI agent automates the generation of the Letter of Instruction needed to facilitate the filing of California Form RRF-1 (Annual Registration Renewal Fee Report to the Attorney General of California).", "portNumber": 8505, "subdomain": "rrfgen", "techUsed": "Flask", "department": "Tax" },
+            { "slNo": 5, "name": "SOC-1 Audit Control Report", "description": "To generate the Control Report for SOC-1 Audit (Only Frontend)", "portNumber": 8506, "subdomain": "soc1report", "techUsed": "Flask", "department": "Audit" },
+            { "slNo": 6, "name": "Capital Outlay TW", "description": "This AI agent assists auditors in reviewing capital project expenditures. It performs detailed test of transactions, identifies variances, and prepares audit-ready summaries to support compliance and reporting.", "portNumber": 8556, "subdomain": "captest", "techUsed": "Flask", "department": "Audit" },
+            { "slNo": 7, "name": "Audit Liability Tool", "description": "", "portNumber": 8569, "subdomain": "auditliab", "techUsed": "Flask", "department": "Audit" },
+            { "slNo": 8, "name": "Cover Letter Crafter", "description": "This AI agent prepares the cover letter to exempt organizations (with Prelim/Revised draft) to ask the client for the applicability of schedules and data related to that schedule etc.", "portNumber": 8512, "subdomain": "clcraft", "techUsed": "Flask", "department": "Tax" },
+            { "slNo": 9, "name": "RRF Status Tracker", "description": "This AI agent is prepared for creating the letter of instruction. This agent required Filed Form RRF-1, format of letter of instruction and date of final return and it will create the RRF-1 letter of instruction.", "portNumber": 8515, "subdomain": "rrfmon", "techUsed": "Flask", "department": "Tax" },
+            { "slNo": 10, "name": "Tax Return Formatting", "description": "To prepare the prelim, Revised and Final tax return package", "portNumber": 8516, "subdomain": "taxsmith", "techUsed": "Flask", "department": "Tax" },
+            { "slNo": 11, "name": "Lease Compliance Agent", "description": "This tool Automate end-to-end lease accounting under US GAAP. The agent ingests lease documents, identifies embedded leases, classifies finance vs operating, and calculates initial/ongoing measurements with audit-ready outputs.", "portNumber": 8518, "subdomain": "leasewise", "techUsed": "Streamlit", "department": "Audit" },
+            { "slNo": 12, "name": "990 PY Manager", "description": "To transfer prior year data in the current year working sheet for multiple clients at the same time", "portNumber": 8520, "subdomain": "datashift", "techUsed": "Streamlit", "department": "Tax" },
+            { "slNo": 13, "name": "Tax Package Generator", "description": "This AI agent consolidates all tax-related documents, including engagement letters, RRF forms, and cover letters, into a complete, client-ready package", "portNumber": 8522, "subdomain": "taxbox", "techUsed": "Flask", "department": "Tax" },
+            { "slNo": 14, "name": "Inventory Management Agent", "description": "", "portNumber": 8549, "subdomain": "invex", "techUsed": "Flask", "department": "Audit" },
+            { "slNo": 15, "name": "Journal Entry TW", "description": "", "portNumber": 8555, "subdomain": "jetwork", "techUsed": "Flask", "department": "Audit" },
+            { "slNo": 16, "name": "Other Revenue TW", "description": "", "portNumber": 8563, "subdomain": "revtest", "techUsed": "Flask", "department": "Audit" },
+            { "slNo": 17, "name": "Repair & Maintenance TW Agent", "description": "This AI agent reviews repair and maintenance expenses to determine whether costs should be capitalized or expensed based on thresholds and materiality. It performs sample invoice testing, validates transaction details, and highlights findings or potential fraud, generating a ready-to-use audit summary for auditor review.", "portNumber": 8564, "subdomain": "rmtest", "techUsed": "Flask", "department": "Audit" },
+            { "slNo": 18, "name": "Prepaid Expense Analysis", "description": " This AI agent reviews the general ledger to identify prepaid nature expenses. It analyzes transactions against accounting periods, applies materiality thresholds, and performs sample testing to ensure proper classification. The agent flags exceptions, unusual entries, or potential misstatements and generates a ready-to-review audit summary for compliance verification.", "portNumber": 8565, "subdomain": "prepaid", "techUsed": "Flask", "department": "Audit" },
+            { "slNo": 19, "name": "Tax EL Generator", "description": "This AI agent is designed to prepare tax engagement letters efficiently and accurately. By using client data from Excel, including name, address, tax year, services, and fees, it can generate multiple engagement letters simultaneously. The agent ensures consistent formatting, compliance with regulatory standards, and significantly reduces manual effort", "portNumber": 8574, "subdomain": "taxelgen", "techUsed": "Flask", "department": "Tax" },
+            { "slNo": 20, "name": "1099 Tracker MongoDB", "description": "This AI agent prepares vendor 1099 lists using data from the general ledger and check registers. It validates vendor information, applies tax thresholds, and ensures accurate reporting. Once processed, the agent can automatically upload the data to Tax1099.com, reducing manual work, minimizing errors, and generating a ready-to-review summary for compliance and audit purposes.", "portNumber": 8578, "subdomain": "1099track", "techUsed": "Flask", "department": "Accounting" },
+            { "slNo": 21, "name": "Accufund Formatter", "description": "This AI agent formats general ledger extracts from Accufund accounting software into a standardized, audit-ready structure. It organizes transaction data, ensures consistency, and highlights anomalies or discrepancies for review. The agent produces ready-to-use outputs that streamline reconciliations and reporting, saving time and reducing manual errors for accounting and audit teams.", "portNumber": 8580, "subdomain": "accuformat", "techUsed": "Flask", "department": "Accounting" },
+            { "slNo": 22, "name": "Directory Maker", "description": "This AI agent creates organized directories and subfolders automatically, fetching and arranging client data efficiently. It ensures all files are structured, accessible, and ready for review, reducing manual work and saving time.", "portNumber": 8581, "subdomain": "dirmaker", "techUsed": "TypeScript", "department": "Accounting" },
+            { "slNo": 23, "name": "Budget Preparation Assistance", "description": "", "portNumber": 8582, "subdomain": "budgetprep", "techUsed": "Flask", "department": "Accounting" },
+            { "slNo": 24, "name": "Securities Deposits Analysis", "description": "This AI agent reviews the general ledger to identify and analyze security deposits and investment transactions. It performs sample transaction testing, validates the nature and classification of each deposit, applies materiality thresholds, and flags exceptions, anomalies, or potential misstatements. The agent produces a ready-to-review audit summary, helping auditors detect irregularities and ensure compliance.", "portNumber": 8567, "subdomain": "secdepo", "techUsed": "Flask", "department": "Audit" }
+        ];
+
+        let currentFilter = 'all';
+        let currentSearch = '';
+
+        // Function to generate the appropriate URL based on configuration
+        function getAgentUrl(agent) {
+            const config = URL_CONFIG[URL_CONFIG.mode];
+            if (URL_CONFIG.mode === 'development') {
+                return `${config.baseUrl}:${agent.portNumber}`;
+            } else {
+                return `${config.protocol}${agent.subdomain}.${config.baseUrl}`;
+            }
+        }
+
+        // Function to render agent cards with filtering logic from aiagents 1.html
+        function renderAgentCards() {
+            const agentsGrid = document.getElementById('agentsGrid');
+            agentsGrid.innerHTML = '';
+
+            // Filter agents based on current filter and search
+            const filteredAgents = agents.filter(agent => {
+                const matchesFilter = currentFilter === 'all' || agent.department === currentFilter;
+                const matchesSearch = currentSearch === '' || 
+                    agent.name.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                    (agent.description && agent.description.toLowerCase().includes(currentSearch.toLowerCase())) ||
+                    (agent.department && agent.department.toLowerCase().includes(currentSearch.toLowerCase()));
+                
+                return matchesFilter && matchesSearch;
+            });
+
+            // Show no results message if no agents match
+            if (filteredAgents.length === 0) {
+                agentsGrid.innerHTML = '<div class="no-results">No agents found matching your criteria</div>';
+                return;
+            }
+
+            // Render filtered agents
+            filteredAgents.forEach(agent => {
+                const card = document.createElement('div');
+                card.className = 'agent-card';
+                const hasDescription = agent.description && agent.description.trim() !== '';
+                const agentUrl = getAgentUrl(agent);
+
+                card.innerHTML = `
+                    <div class="agent-card-body">
+                        <h3 class="agent-name">${agent.name}</h3>
+                        ${hasDescription ? `<p class="agent-description">${agent.description}</p>` : ''}
+                        <div class="agent-meta">
+                            ${agent.department ? `<span class="agent-badge badge-department">${agent.department}</span>` : ''}
+                        </div>
+                        <a href="${agentUrl}" target="_blank" class="agent-link">
+                            Launch Agent
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </a>
+                    </div>
+                `;
+
+                agentsGrid.appendChild(card);
+            });
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            renderAgentCards();
+
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function (e) {
+                currentSearch = e.target.value;
+                renderAgentCards();
+            });
+
+            // Filter functionality
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.getAttribute('data-filter');
+                    renderAgentCards();
+                });
+            });
+
+            // Navigation menu functionality
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const productLink = document.getElementById('productLink');
+            const productMegaMenu = document.getElementById('productMegaMenu');
+            const mobileProductLink = document.getElementById('mobileProductLink');
+            const mobileProductSubmenu = document.getElementById('mobileProductSubmenu');
+            let megaMenuTimeout;
+
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.onclick = function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (mobileMenu.classList.contains('active')) {
+                        mobileMenu.classList.remove('active');
+                        if (mobileProductSubmenu) mobileProductSubmenu.classList.remove('active');
+                        if (mobileProductLink) mobileProductLink.classList.remove('active');
+                    } else {
+                        mobileMenu.classList.add('active');
+                    }
+                };
+            }
+
+            if (mobileProductLink && mobileProductSubmenu) {
+                mobileProductLink.onclick = function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (mobileProductSubmenu.classList.contains('active')) {
+                        mobileProductSubmenu.classList.remove('active');
+                        mobileProductLink.classList.remove('active');
+                    } else {
+                        mobileProductSubmenu.classList.add('active');
+                        mobileProductLink.classList.add('active');
+                    }
+                };
+            }
+
+            if (productLink && productMegaMenu) {
+                productLink.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    if (window.innerWidth >= 1305) {
+                        if (productMegaMenu.classList.contains('active')) {
+                            closeMegaMenu();
+                        } else {
+                            openMegaMenu();
+                        }
+                    }
+                });
+
+                productLink.addEventListener('mouseenter', function () {
+                    if (window.innerWidth >= 1305) {
+                        clearTimeout(megaMenuTimeout);
+                        openMegaMenu();
+                    }
+                });
+
+                productLink.addEventListener('mouseleave', function () {
+                    if (window.innerWidth >= 1305) {
+                        megaMenuTimeout = setTimeout(closeMegaMenu, 200);
+                    }
+                });
+
+                productMegaMenu.addEventListener('mouseenter', function () {
+                    if (window.innerWidth >= 1305) {
+                        clearTimeout(megaMenuTimeout);
+                    }
+                });
+
+                productMegaMenu.addEventListener('mouseleave', function () {
+                    if (window.innerWidth >= 1305) {
+                        megaMenuTimeout = setTimeout(closeMegaMenu, 200);
+                    }
+                });
+            }
+
+            function openMegaMenu() {
+                productMegaMenu.classList.add('active');
+                productLink.classList.add('active');
+            }
+
+            function closeMegaMenu() {
+                productMegaMenu.classList.remove('active');
+                productLink.classList.remove('active');
+            }
+
+            document.addEventListener('click', function (event) {
+                if (productMegaMenu && !productMegaMenu.contains(event.target) &&
+                    productLink && !productLink.contains(event.target) &&
+                    productMegaMenu.classList.contains('active')) {
+                    closeMegaMenu();
+                }
+
+                if (mobileMenu && !mobileMenu.contains(event.target) &&
+                    mobileMenuBtn && !mobileMenuBtn.contains(event.target) &&
+                    mobileMenu.classList.contains('active')) {
+                    mobileMenu.classList.remove('active');
+                    if (mobileProductSubmenu) mobileProductSubmenu.classList.remove('active');
+                    if (mobileProductLink) mobileProductLink.classList.remove('active');
+                }
+            });
+
+            window.addEventListener('resize', function () {
+                if (window.innerWidth >= 1305) {
+                    if (mobileMenu) {
+                        mobileMenu.classList.remove('active');
+                        if (mobileProductSubmenu) mobileProductSubmenu.classList.remove('active');
+                        if (mobileProductLink) mobileProductLink.classList.remove('active');
+                    }
+                } else {
+                    if (productMegaMenu) closeMegaMenu();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
